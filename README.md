@@ -1,26 +1,62 @@
 # OpenGL-Graphics
 
-A view to the interactions between the moon and a rocket in space using various.
+Components of the project 
 
-**Programmer: Saee A. Gore
-Shell-Commands
+-Different interactions between the moon and a rocket in space.
+-Written in C++ 
+- All objects have lighting and materials.
+-Runs on Visual Studio
 
--Executes in Linux Shell which supports commands with multiple arguments 
--Handles interrupt signal. -Written in C -Works on a linux server.
+Interactions of the project:
+- Mouse Interactions: 
 
-How to Run -Save the code in a file named 'code.c' and then save it in a directory. -For running the code, type 'gcc code.c -pthread -o code' -Then press 'Enter' and type './code'
+  *Right button: Rotation 
 
-Try executing various commands.
-For example, One word commands like: ls - lists contents of a directory pwd - prints name of the current directory.
+  *Left button: Rotation 
 
-Two word commands like: mkdir Student - makes a directory named Student. du code.c - estimates file space usage. rm code - removes file named code
+  *Middle button: The menu list will appear.
 
-Three word commands like: cp code.c copycode.c - copies the contents of code.c to copycode.c mv code.c copycode.c - renames the file name from code.c to copycode.c
+- Keyboard Interactions: 
 
-How to catch interrupt signal
+  *Alphabet: 
 
-Press Ctrl+C and a message will be displayed stating Ctrl+C was pressed by user.
-How to exit the program
+  q - For exiting the program.
 
-Type 'exit' and the program will end.
+  *Arrow Keys: 
+
+  *Number Keys:
+ 
+ 1:
+ 2:
+ 3:
+ 4:
+ 5:
+ 6:
+ 7:
+
+- Menu Interactions: 
+  The menu interaction occurs when the middle mouse button is clicked.
+  It consists of a question stating 'What would you like the program to do?'.
+  Upon clicking it, 3 options will appear.
+
+  Option 1: Start the animation 
+  ->display2() is called.
+  -> A rocket starts to revolve around the moon.
+
+  Option 2: Stop the animation 
+  ->display1() is called.
+  -> The parts of rocket and moon are suspended in the space. 
+
+  Option 3: Exit 
+  Exits the application.
+  
+How to run 
+-Save the code in a file called 'Project.cpp'. 
+-Save the 'myObjects2020.cpp' file in a file called 'myObjects2020.cpp' file.
+-Click on Run and the output will be displayed.
+
+How to exit the program 
+-Click on 'q' on the keyboard.
+-Click on the 'Exit' option in the menu.
+
 **Programmer: Saee A. Gore
