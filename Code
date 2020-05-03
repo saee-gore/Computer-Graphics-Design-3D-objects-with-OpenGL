@@ -1,5 +1,3 @@
-**Programmer: Saee A. Gore
-
 #include <math.h>
 #include <GL\glut.h>
 #include "../myObjects2020.cpp"
