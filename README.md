@@ -10,9 +10,7 @@ Components of the project
 Interactions of the project:
 - Mouse Interactions: 
 
-  *Right button: Rotation 
-
-  *Left button: Rotation 
+  *Right button and Left button: Rotation in a particular axis.
 
   *Middle button: The menu list will appear.
 
@@ -23,16 +21,20 @@ Interactions of the project:
   q - For exiting the program.
 
   *Arrow Keys: 
+  Right:Rotation in x-y axis in clockwise direction
+  Left:Rotation in x-y axis in counterclockwise direction
+  Up:Rotation in z axis in counterclockwise direction
+  Down:Rotation in z axis in clockwise direction
 
   *Number Keys:
  
- 1:
- 2:
- 3:
- 4:
- 5:
- 6:
- 7:
+ 1: Stops the idle animation
+ 2: Starts the idle animation
+ 3: Changes the red color with lighting and materials
+ 4: Changes the white color with lighting and materials
+ 5: Changes the brass yellow color with lighting and materials
+ 6: Changes the lighting to white lighting
+ 7: Changes the lighting to colored lighting
 
 - Menu Interactions: 
   The menu interaction occurs when the middle mouse button is clicked.
