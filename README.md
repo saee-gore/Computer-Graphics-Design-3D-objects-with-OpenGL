@@ -1,4 +1,4 @@
-# OpenGL-Graphics
+# OpenGL-Graphics-A-satellite-revolving-around-the-moon
 
 Components of the project 
 
