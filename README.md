@@ -5,7 +5,7 @@
 - All objects have lighting and materials.
 - Runs on Visual Studio
 
-## Interactions of this project:
+## Interactions of this project
 
 - Mouse Interactions
 - Keyboard Interactions
@@ -13,26 +13,26 @@
 - Number Keys
 - Menu Interactions
 
-## Mouse Interactions: 
+## Mouse Interactions 
 
   - Right button and Left button: Rotation in a particular axis.
   - Middle button: The menu list will appear.
 
-## Keyboard Interactions: 
+## Keyboard Interactions 
 
   - Alphabet q is used for exiting the program.
 
- ## Arrow Keys: 
-  - Right Key:
+ ## Arrow Keys 
+  - Right Key
     - Rotation in x-y axis in clockwise direction
-  - Left Key:
+  - Left Key
     - Rotation in x-y axis in counterclockwise direction
-  - Up Key:
+  - Up Key
     - Rotation in z axis in counterclockwise direction
-  - Down Key:
+  - Down Key
     - Rotation in z axis in clockwise direction
 
- ## Number Keys:
+ ## Number Keys
  
    1.  Stops the idle animation
    2.  Starts the idle animation
@@ -42,7 +42,7 @@
    6.  Changes the lighting to white lighting
    7.  Changes the lighting to colored lighting
 
-## Menu Interactions: 
+## Menu Interactions 
   - The menu interaction occurs when the middle mouse button is clicked.
   - It consists of a question stating 'What would you like the program to do?'.
   - Upon clicking it, 3 options will appear.
