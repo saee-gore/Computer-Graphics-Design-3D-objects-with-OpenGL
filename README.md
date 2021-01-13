@@ -1,13 +1,13 @@
 # OpenGL-Graphics:A-satellite-revolving-around-the-moon
 
-##Components of the project 
+## Components of the project 
 
 - Different interactions between the moon and a rocket in space.
 - Written in C++ 
 - All objects have lighting and materials.
 - Runs on Visual Studio
 
-##Interactions of the project:
+## Interactions of the project:
 
 - Mouse Interactions
 - Keyboard Interactions
