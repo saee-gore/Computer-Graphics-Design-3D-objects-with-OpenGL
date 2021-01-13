@@ -18,13 +18,13 @@ Interactions of the project:
 
   - Alphabet: 
 
-  q - For exiting the program.
+    q - For exiting the program.
 
   - Arrow Keys: 
-  Right:Rotation in x-y axis in clockwise direction
-  Left:Rotation in x-y axis in counterclockwise direction
-  Up:Rotation in z axis in counterclockwise direction
-  Down:Rotation in z axis in clockwise direction
+    Right:Rotation in x-y axis in clockwise direction
+    Left:Rotation in x-y axis in counterclockwise direction
+    Up:Rotation in z axis in counterclockwise direction
+    Down:Rotation in z axis in clockwise direction
 
   - Number Keys:
  
@@ -37,20 +37,20 @@ Interactions of the project:
  7: Changes the lighting to colored lighting
 
 - Menu Interactions: 
-  The menu interaction occurs when the middle mouse button is clicked.
-  It consists of a question stating 'What would you like the program to do?'.
-  Upon clicking it, 3 options will appear.
+    -The menu interaction occurs when the middle mouse button is clicked.
+    -It consists of a question stating 'What would you like the program to do?'.
+    -Upon clicking it, 3 options will appear.
 
   - Option 1: Start the animation 
-  ->display2() is called.
-  -> A rocket starts to revolve around the moon.
+      ->display2() is called.
+      -> A rocket starts to revolve around the moon.
 
   - Option 2: Stop the animation 
-  ->display1() is called.
-  -> The parts of rocket and moon are suspended in the space. 
+      ->display1() is called.
+      -> The parts of rocket and moon are suspended in the space. 
 
   - Option 3: Exit 
-  Exits the application.
+      -Exits the application.
   
 - How to run 
 -Save the code in a file called 'Project.cpp'. 
