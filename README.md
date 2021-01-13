@@ -26,41 +26,41 @@ A graphical view of interactions between the moon and a rocket in space.
 
     - Alphabet q is used for exiting the program.
 
- ### Arrow Keys 
-  - Right Key
-    - Rotation in x-y axis in clockwise direction
-  - Left Key
-    - Rotation in x-y axis in counterclockwise direction
-  - Up Key
-    - Rotation in z axis in counterclockwise direction
-  - Down Key
-    - Rotation in z axis in clockwise direction
+   ### Arrow Keys 
+    - Right Key
+      - Rotation in x-y axis in clockwise direction
+    - Left Key
+      - Rotation in x-y axis in counterclockwise direction
+    - Up Key
+      - Rotation in z axis in counterclockwise direction
+    - Down Key
+      - Rotation in z axis in clockwise direction
 
- ### Number Keys
- 
-   1.  Stops the idle animation
-   2.  Starts the idle animation
-   3.  Changes the red color with lighting and materials
-   4.  Changes the white color with lighting and materials
-   5.  Changes the brass yellow color with lighting and materials
-   6.  Changes the lighting to white lighting
-   7.  Changes the lighting to colored lighting
+   ### Number Keys
 
-### Menu Interactions 
-  - The menu interaction occurs when the middle mouse button is clicked.
-  - It consists of a question stating 'What would you like the program to do?'.
-  - Upon clicking it, 3 options will appear.
-    
-  - Option 1: Start the animation 
-     - display2() is called.
-     - A rocket starts to revolve around the moon.
+     1.  Stops the idle animation
+     2.  Starts the idle animation
+     3.  Changes the red color with lighting and materials
+     4.  Changes the white color with lighting and materials
+     5.  Changes the brass yellow color with lighting and materials
+     6.  Changes the lighting to white lighting
+     7.  Changes the lighting to colored lighting
 
-  - Option 2: Stop the animation 
-     - display1() is called.
-     - The parts of rocket and moon are suspended in the space. 
+  ### Menu Interactions 
+    - The menu interaction occurs when the middle mouse button is clicked.
+    - It consists of a question stating 'What would you like the program to do?'.
+    - Upon clicking it, 3 options will appear.
 
-  - Option 3: Exit 
-     - Exits the application.
+    - Option 1: Start the animation 
+       - display2() is called.
+       - A rocket starts to revolve around the moon.
+
+    - Option 2: Stop the animation 
+       - display1() is called.
+       - The parts of rocket and moon are suspended in the space. 
+
+    - Option 3: Exit 
+       - Exits the application.
   
 ## How to run 
 - Save the code in a file called 'Project.cpp'. 
