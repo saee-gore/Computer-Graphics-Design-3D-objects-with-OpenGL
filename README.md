@@ -1,4 +1,4 @@
-## Graphics-A-satellite-revolving-around-the-moon
+# Graphics-A-satellite-revolving-around-the-moon
 
 A graphical view of interactions between the moon and a rocket in space.
 
