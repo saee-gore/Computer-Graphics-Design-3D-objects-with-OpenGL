@@ -23,20 +23,20 @@
   - Alphabet q is used for exiting the program.
 
  ## Arrow Keys: 
-    - Right:Rotation in x-y axis in clockwise direction
-    - Left:Rotation in x-y axis in counterclockwise direction
-    - Up:Rotation in z axis in counterclockwise direction
-    - Down:Rotation in z axis in clockwise direction
+  - Right:Rotation in x-y axis in clockwise direction
+  - Left:Rotation in x-y axis in counterclockwise direction
+  - Up:Rotation in z axis in counterclockwise direction
+  - Down:Rotation in z axis in clockwise direction
 
  ## Number Keys:
  
-   1. Stops the idle animation
-   2. Starts the idle animation
-   3. Changes the red color with lighting and materials
-   4. Changes the white color with lighting and materials
-   5. Changes the brass yellow color with lighting and materials
-   6. Changes the lighting to white lighting
-   7. Changes the lighting to colored lighting
+   1.  Stops the idle animation
+   2.  Starts the idle animation
+   3.  Changes the red color with lighting and materials
+   4.  Changes the white color with lighting and materials
+   5.  Changes the brass yellow color with lighting and materials
+   6.  Changes the lighting to white lighting
+   7.  Changes the lighting to colored lighting
 
 ## Menu Interactions: 
     - The menu interaction occurs when the middle mouse button is clicked.
