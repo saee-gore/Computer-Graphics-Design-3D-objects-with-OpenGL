@@ -17,14 +17,14 @@ A graphical view of interactions between the moon and a rocket in space.
 - Number Keys
 - Menu Interactions
 
-### Mouse Interactions 
+  ### Mouse Interactions 
 
-  - Right button and Left button: Rotation in a particular axis.
-  - Middle button: The menu list will appear.
+    - Right button and Left button: Rotation in a particular axis.
+    - Middle button: The menu list will appear.
 
-### Keyboard Interactions 
+  ### Keyboard Interactions 
 
-  - Alphabet q is used for exiting the program.
+    - Alphabet q is used for exiting the program.
 
  ### Arrow Keys 
   - Right Key
