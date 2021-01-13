@@ -8,6 +8,13 @@ Components of the project
 - Runs on Visual Studio
 
 Interactions of the project:
+
+- Mouse Interactions
+- Keyboard Interactions
+- Arrow Keys
+- Number Keys
+
+
 - Mouse Interactions: 
 
   - Right button and Left button: Rotation in a particular axis.
@@ -61,4 +68,4 @@ Interactions of the project:
 -Click on 'q' on the keyboard.
 -Click on the 'Exit' option in the menu.
 
-#Programmer: Saee A. Gore
+**Programmer: Saee A. Gore**
