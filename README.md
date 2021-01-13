@@ -23,11 +23,14 @@
   - Alphabet q is used for exiting the program.
 
  ## Arrow Keys: 
-  - Right:
+  - Right Key:
     - Rotation in x-y axis in clockwise direction
-  - Left:Rotation in x-y axis in counterclockwise direction
-  - Up:Rotation in z axis in counterclockwise direction
-  - Down:Rotation in z axis in clockwise direction
+  - Left Key:
+    - Rotation in x-y axis in counterclockwise direction
+  - Up Key:
+    - Rotation in z axis in counterclockwise direction
+  - Down Key:
+    - Rotation in z axis in clockwise direction
 
  ## Number Keys:
  
