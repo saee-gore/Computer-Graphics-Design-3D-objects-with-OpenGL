@@ -1,4 +1,4 @@
-# Computer Graphics-A-satellite-revolving-around-the-moon
+# Computer Graphics-Design 3D objects with OpenGL
 
 A graphical view of interactions between the moon and a rocket in space.
 
