@@ -1,474 +1,400 @@
 #include <math.h>
 #include <GL\glut.h>
-
+//------ global variables and constants------------
+GLsizei ww = 512;
+GLsizei wh = 512;
+GLfloat left, right, bottom, top, near = 5, far = 20;
+const float REGION_DIM = 4;
+GLfloat fov = 45.0, aspect = 1;
+GLfloat theta = 30, phi = 60, rho = 10;
+GLfloat dTheta = 5, dPhi = 5, dRho = 0.5;
+GLfloat alpha = 0, beta = 0, gama = 0;
+GLfloat dAlpha = 5, dBeta = 5, dGama = 5;
+GLfloat a = 0.5, b = 2, c = 1;
+GLfloat dA = 0.1, dB = 0.1, dC = 0.1;
+GLfloat direction = 1.0;
+GLfloat lightPos[] = { 2, 4, 6, 1 };
 
 const GLfloat DtoR = 0.017453;
-const GLfloat Pi = 3.14159;
 
-void parabola(float a, float h, float k, float leftEnd, float rightEnd);
-void parabola2(float a, float b, float c, float leftEnd, float rightEnd);
-void circle(float x0, float y0, float r);
-void ellipse(float x0, float y0, float a, float b);
-void cone(float r, float h);
-void cylinder(float r, float h);
-void colorCube(float a, float b, float c, float size);
-void axes(float length);
-void sphere(float r, int slices, int stacks);
-void ellipsoid(float a, float b, float c, int slices, int stacks);
-void paraboloid(float a, float b, float c, int slices, int stacks);
-void normal(float p0[], float p1[], float p2[], float n[]);
-void normal(float p0[], float p1[], float p2[], float n[], float size);
+typedef struct materialStruct {
+	GLfloat ambient[4];
+	GLfloat diffuse[4];
+	GLfloat specular[4];
+	GLfloat shininess;
+} materialStruct;
 
-void normal(float p0[], float p1[], float p2[], float n[], float size)
+typedef struct lightingStruct {
+	GLfloat ambient[4];
+	GLfloat diffuse[4];
+	GLfloat specular[4];
+} lightingStruct;
+
+materialStruct* currentMaterials;
+lightingStruct* currentLighting;
+
+materialStruct brassMaterials = {
+	{ 0.33, 0.22, 0.03, 1.0 },
+{ 0.78, 0.57, 0.11, 1.0 },
+{ 0.99, 0.91, 0.81, 1.0 },
+27.8
+};
+
+materialStruct redPlasticMaterials = {
+	{ 0.3, 1.0, 0.0, .1 },
+{ 0.6, 0.0, 0.0, .1 },
+{ 0.8, 0.6, 0.6, .1 },
+32.0
+};
+
+materialStruct whiteShineyMaterials = {
+	{ 1.0, 1.0, 1.0, 1.0 },
+{ 1.0, 1.0, 1.0, 1.0 },
+{ 1.0, 1.0, 1.0, 1.0 },
+100.0
+};
+
+lightingStruct whiteLighting = {
+	{0.0, 0.0, 0.0, 1.0},
+	{1.0, 1.0, 1.0, 1.0},
+	{1.0, 1.0, 1.0, 1.0}
+};
+
+lightingStruct coloredLighting = {
+	{0.2, 0.0, 0.0, 1.0},
+	{0.0, 1.0, 0.0, 1.0},
+	{0.0, 0.0, 1.0, 1.0}
+};
+
+void materials(materialStruct*);
+void lighting(lightingStruct*);
+
+//----- prototypes ----------
+void display1(void);
+void display2(void);
+void init(void);
+void reshape(GLsizei w, GLsizei h);
+void keys(unsigned char k, int x, int y);
+void mouse(int, int, int, int);
+void idle(void);
+
+void midbtn_menu(int);
+void menu(int);
+
+void materials(materialStruct* m)
 {
-	float a[3], b[3];
-	float d;
-
-	for (int i = 0; i < 3; i++)
-	{
-		a[i] = p1[i] - p0[i];
-		b[i] = p2[i] - p0[i];
-	}
-
-	n[0] = (a[1] * b[2] - a[2] * b[1]);
-	n[1] = (a[2] * b[0] - a[0] * b[2]);
-	n[2] = (a[0] * b[1] - a[1] * b[0]);
-
-	d = sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
-
-	if (d == 0)
-		d = 1;
-
-	for (int i = 0; i < 3; i++)
-		n[i] = n[i] / d * size;
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m->ambient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m->diffuse);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m->specular);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, m->shininess);
 }
 
-void normal(float p0[], float p1[], float p2[], float n[])
+void lighting(lightingStruct* li)
 {
-	float a[3], b[3];
-	float d;
+	glLightfv(GL_LIGHT0, GL_AMBIENT, li->ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, li->diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, li->specular);
 
-	for (int i = 0; i < 3; i++)
-	{
-		a[i] = p1[i] - p0[i];
-		b[i] = p2[i] - p0[i];
-	}
-
-	n[0] = a[1] * b[2] - a[2] * b[1];
-	n[1] = a[2] * b[0] - a[0] * b[2];
-	n[2] = a[0] * b[1] - a[1] * b[0];
-
-	d = sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
-
-	if (d == 0)
-		d = 1;
-
-	for (int i = 0; i < 3; i++)
-		n[i] = n[i] / d;
 }
 
-void normalize(float p[3])
+void midbtn_menu(int id)
+{}
+
+void display1(void)
 {
-	float dSquare = p[0] * p[0] + p[1] * p[1] + p[2] * p[2];
+	GLUquadricObj *myObject;
+	myObject = gluNewQuadric();
+	GLenum myStyle = GLU_LINE;  
 
-	if (dSquare != 0.0)
-		for (int i = 0; i < 3; i++)
-			p[i] = p[i] / sqrt(dSquare);
-}
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 
-void paraboloidN(float a, float b, float c, int slices, int stacks)
-{
-	float z1, z2;
-	float dz = c / stacks;
-	int dTheta = (int)(360.0 / slices);
-	float p1[3], p2[3], p3[3], p4[3];
-	float n1[3], n2[3], n3[3], n4[3];
-	float xAxis1, yAxis1, xAxis2, yAxis2;
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(rho*sin(theta*DtoR)*sin(phi*DtoR), rho*cos(phi*DtoR), rho*cos(theta*DtoR)*sin(phi*DtoR), 0, 0, 0, 0, 1, 0);
+	
+	materials(currentMaterials);
+	lighting(currentLighting);
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+	gluQuadricDrawStyle(myObject, myStyle);
 
-	for (int i = 0; i < stacks; i++)
-	{
-		for (int theta = 0; theta <= 360; theta += dTheta)
-		{
-			z1 = i * dz;
-			xAxis1 = a * sqrt(z1 / c);
-			yAxis1 = b * sqrt(z1 / c);
+	glLineWidth(3);
 
-			z2 = z1 + dz;
-			xAxis2 = a * sqrt(z2 / c);
-			yAxis2 = b * sqrt(z2 / c);
-
-			p1[0] = xAxis1 * cos(theta*DtoR);
-			p1[1] = yAxis1 * sin(theta*DtoR);
-			p1[2] = z1;
-			n1[0] = 2 * p1[0] / a / a;
-			n1[1] = 2 * p1[1] / b / b;
-			n1[2] = -1.0 / c;
-			normalize(n1);
-
-			p2[0] = xAxis1 * cos((theta + dTheta)*DtoR);
-			p2[1] = yAxis1 * sin((theta + dTheta)*DtoR);
-			p2[2] = z1;
-			n2[0] = 2 * p2[0] / a / a;
-			n2[1] = 2 * p2[1] / b / b;
-			n2[2] = -1.0 / c;
-			normalize(n2);
-
-			p3[0] = xAxis2 * cos((theta + dTheta)*DtoR);
-			p3[1] = yAxis2 * sin((theta + dTheta)*DtoR);
-			p3[2] = z2;
-			n3[0] = 2 * p3[0] / a / a;
-			n3[1] = 2 * p3[1] / b / b;
-			n3[2] = -1.0 / c;
-			normalize(n3);
-
-			p4[0] = xAxis2 * cos(theta*DtoR);
-			p4[1] = yAxis2 * sin(theta*DtoR);
-			p4[2] = z2;
-			n4[0] = 2 * p4[0] / a / a;
-			n4[1] = 2 * p4[1] / b / b;
-			n4[2] = -1.0 / c;
-			normalize(n4);
-
-			glBegin(GL_POLYGON);
-			glNormal3fv(n1);
-			glVertex3fv(p1);
-
-			glNormal3fv(n2);
-			glVertex3fv(p2);
-
-			glNormal3fv(n3);
-			glVertex3fv(p3);
-
-			glNormal3fv(n4);
-			glVertex3fv(p4);
-			glEnd();
-		}
-	}
-}
-
-
-void paraboloid(float a, float b, float c, int slices, int stacks)
-{
-	float z1, z2;
-	float dz = c / stacks;
-	int dTheta = (int)(360.0 / slices);
-	float x, y;
-
-
-	for (int i = 0; i <= stacks; i++)
-	{
-		glBegin(GL_QUAD_STRIP);
-		for (int j = 0; j <= slices + 1; j++)
-		{
-			z1 = i * dz;
-			x = a * sqrt(z1 / c)*cos(j*dTheta*DtoR);
-			y = b * sqrt(z1 / c)*sin(j*dTheta*DtoR);
-			glVertex3f(x, y, z1);
-
-			z2 = z1 + dz;
-			x = a * sqrt(z2 / c)*cos(j*dTheta*DtoR);
-			y = b * sqrt(z2 / c)*sin(j*dTheta*DtoR);
-		}
-		glEnd();
-	}
-	//glEnd();
-}
-
-void ellipsoid(float a, float b, float c, int slices, int stacks)
-{
-	GLint longitude = (int)(360.0 / slices);
-	GLint latitude = (int)(180.0 / stacks);
-	GLint phi, theta;
-	GLfloat p1[3], p2[3], p3[3], p4[3];
-
-	glBegin(GL_POLYGON);
-	for (phi = 0; phi < 180; phi += latitude)
-	{
-		for (theta = 0; theta < 360; theta += longitude)
-		{
-			p1[0] = a * sin(phi*DtoR)*cos(theta*DtoR);
-			p1[1] = b * sin(phi*DtoR)*sin(theta*DtoR);
-			p1[2] = c * cos(phi*DtoR);
-
-			p2[0] = a * sin((phi + latitude)*DtoR)*cos(theta*DtoR);
-			p2[1] = b * sin((phi + latitude)*DtoR)*sin(theta*DtoR);
-			p2[2] = c * cos((phi + latitude)*DtoR);
-
-			p3[0] = a * sin((phi + latitude)*DtoR)*cos((theta + longitude)*DtoR);
-			p3[1] = b * sin((phi + latitude)*DtoR)*sin((theta + longitude)*DtoR);
-			p3[2] = c * cos((phi + latitude)*DtoR);
-
-			p4[0] = a * sin((phi)*DtoR)*cos((theta + longitude)*DtoR);
-			p4[1] = b * sin((phi)*DtoR)*sin((theta + longitude)*DtoR);
-			p4[2] = c * cos((phi)*DtoR);
-
-			glVertex3fv(p1);
-			glVertex3fv(p2);
-			glVertex3fv(p3);
-			glVertex3fv(p4);
-		}
-	}
-	glEnd();
-}
-
-void sphere(float r, int slices, int stacks)
-{
-	GLint longitude = (int)(360.0 / slices);
-	GLint latitude = (int)(180.0 / stacks);
-	GLint phi, theta;
-	GLfloat p1[3], p2[3], p3[3], p4[3];
-
-	for (phi = 0; phi <= 180 - latitude; phi += latitude)
-	{
-		for (theta = 0; theta <= 360; theta += longitude)
-		{
-			p1[0] = r * sin(phi*DtoR)*cos(theta*DtoR);
-			p1[1] = r * sin(phi*DtoR)*sin(theta*DtoR);
-			p1[2] = r * cos(phi*DtoR);
-
-			p2[0] = r * sin((phi + latitude)*DtoR)*cos(theta*DtoR);
-			p2[1] = r * sin((phi + latitude)*DtoR)*sin(theta*DtoR);
-			p2[2] = r * cos((phi + latitude)*DtoR);
-
-			p3[0] = r * sin((phi + latitude)*DtoR)*cos((theta + longitude)*DtoR);
-			p3[1] = r * sin((phi + latitude)*DtoR)*sin((theta + longitude)*DtoR);
-			p3[2] = r * cos((phi + latitude)*DtoR);
-
-			p4[0] = r * sin((phi)*DtoR)*cos((theta + longitude)*DtoR);
-			p4[1] = r * sin((phi)*DtoR)*sin((theta + longitude)*DtoR);
-			p4[2] = r * cos((phi)*DtoR);
-
-			glBegin(GL_POLYGON);
-			glVertex3fv(p1);
-			glVertex3fv(p2);
-			glVertex3fv(p3);
-			glVertex3fv(p4);
-			glEnd();
-		}
-	}
-}
-
-void axes(float length)
-{
+	//------------- the nosecone -----------------
 	glPushMatrix();
-	glPushAttrib(GL_CURRENT_BIT);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	glBegin(GL_LINES);
-	glColor3f(1, 0, 0);
-	glVertex3f(-1 * length, 0, 0);
-	glVertex3f(length, 0, 0);
-
-	glColor3f(0, 1, 0);
-	glVertex3f(0, -1 * length, 0);
-	glVertex3f(0, length, 0);
-
-	glColor3f(0, 0, 1);
-	glVertex3f(0, 0, -1 * length);
-	glVertex3f(0, 0, length);
-	glEnd();
-
+	glRotatef(alpha, 1, 0, 0);	//rotation about the x-axis
+	glutSolidCone(a, 1, 50, 50);
+	glTranslatef(0, 0, -2);
+	gluCylinder(myObject, 0.5, 0.5, 2, 60, 20);
+	gluDisk(myObject, 0, 0.5, 60, 20);
+	glTranslatef(0, 0, -0.5);
+	glutSolidCone(a, 1, 50, 50);
+	glPopMatrix();
+	//-----------------------------------------------
+	
+	glTranslatef(-2, 3, 0);	// shift to the side
+	//--------------------------------------------------------------
 	glPushMatrix();
-	glColor3f(1, 0, 0);
-	glTranslatef(length, 0, 0);
-	glRotatef(90, 0, 1, 0);
-	glutSolidCone(length / 40, length / 8, 20, 10);
+	glRotatef(gama, 1, 0, 0); //rotation about the y-axis
+	glutSolidSphere(1, 30, 20);
 	glPopMatrix();
 
-	glPushMatrix();
-	glColor3f(0, 1, 0);
-	glTranslatef(0, length, 0);
-	glRotatef(-90, 1, 0, 0);
-	glutSolidCone(length / 40, length / 8, 20, 10);
-	glPopMatrix();
+	//--------------------------------------------------------------------
+	glTranslatef(2, -3, 0);	
+
+	glTranslatef(3, 0, 0);	
+	//---------- the  rocket body -------------
 
 	glPushMatrix();
-	glColor3f(0, 0, 1);
-	glTranslatef(0, 0, length);
-	glutSolidCone(length / 40, length / 8, 20, 10);
+	glRotatef(gama, 0, 1, 0); //rotation about the y-axis
+	gluDisk(myObject, 0, 0.5, 60, 20);
+	gluCylinder(myObject, 0.5, 0.5, 2, 60, 20);
+	glTranslatef(0, 0, -0.5);
+	glutSolidCone(a, 1, 50, 50);
+	glTranslatef(0, 0, 2.5);
+	gluDisk(myObject, 0, 0.5, 60, 20);
 	glPopMatrix();
 
-	glPopAttrib();
-	glPopMatrix();
+	glutSwapBuffers();
+	glutPostRedisplay();	// work with GLUT_DOUBLE
 }
 
-//void axes(float length)	// a simple version
-//{
-//	//glLineWidth(1);
-//	glBegin(GL_LINES);
-//	glColor3f(0.8, 0, 0);
-//	glVertex3f(-0.5*length, 0, 0);
-//	glVertex3f(0.5*length, 0, 0);
-//
-//	glColor3f(0, 0.8, 0);
-//	glVertex3f(0, -0.5*length, 0);
-//	glVertex3f(0, 0.5*length, 0);
-//
-//	glColor3f(0, 0, 0.8);
-//	glVertex3f(0, 0, -0.5*length);
-//	glVertex3f(0, 0, 0.5*length);
-//	glEnd();
-//}
-
-void colorCube(float a, float b, float c, float size)
+void display2(void)
 {
-	glBegin(GL_QUAD_STRIP);
-	glColor3f(0, 0, 0);
-	glVertex3f(a - 0.5*size, b - 0.5*size, c - 0.5*size);
+	GLUquadricObj *myObject;
+	myObject = gluNewQuadric();
+	GLenum myStyle = GLU_LINE;  //Seleted from GLU_LINE, GLU_POINT, GLU_FILL, GLU_SILHOUETTE, etc.
 
-	glColor3f(1, 0, 0);
-	glVertex3f(a + 0.5*size, b - 0.5*size, c - 0.5*size);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 
-	glColor3f(0, 1, 0);
-	glVertex3f(a - 0.5*size, b + 0.5*size, c - 0.5*size);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(rho*sin(theta*DtoR)*sin(phi*DtoR), rho*cos(phi*DtoR), rho*cos(theta*DtoR)*sin(phi*DtoR), 0, 0, 0, 0, 1, 0);
 
-	glColor3f(1, 1, 0);
-	glVertex3f(a + 0.5*size, b + 0.5*size, c - 0.5*size);
+	materials(currentMaterials);
+	lighting(currentLighting);
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+	gluQuadricDrawStyle(myObject, myStyle);
 
-	glColor3f(0, 1, 1);
-	glVertex3f(a - 0.5*size, b + 0.5*size, c + 0.5*size);
+	glLineWidth(3);
+	//---------------------------------------------------- 
+	
+	glutSolidSphere(1, 30, 20);
+	glRotatef(gama * -1, 0, 1, 0);
+	glRotatef(alpha * -1, 1, 0, 0);
+	glTranslatef(2, 2, 0);
+	glTranslatef(2, 0, 0);
+	glRotatef(beta, 0, 1, 0);
+	glutSolidCone(a, 1, 30, 30);
+	glTranslatef(0, 0, -2);
+	gluCylinder(myObject, 0.5, 0.5, 2, 60, 20);
+	glTranslatef(0, 0, -0.5);
+	glutSolidCone(a, 1, 50, 50);
+	gluCylinder(myObject, 0.5, 0.5, 2, 60, 20);
+	gluDisk(myObject, 0, 0.5, 60, 20);
+	glTranslatef(0, 0, -0.5);
+	glutSolidCone(a, 1, 50, 50);
 
-	glColor3f(1, 1, 1);
-	glVertex3f(a + 0.5*size, b + 0.5*size, c + 0.5*size);
+	glutSwapBuffers();
+	glutPostRedisplay();	// work with GLUT_DOUBLE
 
-	glColor3f(0, 0, 1);
-	glVertex3f(a - 0.5*size, b - 0.5*size, c + 0.5*size);
-
-	glColor3f(1, 0, 1);
-	glVertex3f(a + 0.5*size, b - 0.5*size, c + 0.5*size);
-
-	glColor3f(0, 0, 0);
-	glVertex3f(a - 0.5*size, b - 0.5*size, c - 0.5*size);
-
-	glColor3f(1, 0, 0);
-	glVertex3f(a + 0.5*size, b - 0.5*size, c - 0.5*size);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glColor3f(1, 0, 0);
-	glVertex3f(a + 0.5*size, b - 0.5*size, c - 0.5*size);
-
-	glColor3f(1, 1, 0);
-	glVertex3f(a + 0.5*size, b + 0.5*size, c - 0.5*size);
-
-	glColor3f(1, 1, 1);
-	glVertex3f(a + 0.5*size, b + 0.5*size, c + 0.5*size);
-
-	glColor3f(1, 0, 1);
-	glVertex3f(a + 0.5*size, b - 0.5*size, c + 0.5*size);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glColor3f(0, 0, 0);
-	glVertex3f(a - 0.5*size, b - 0.5*size, c - 0.5*size);
-
-	glColor3f(0, 1, 0);
-	glVertex3f(a - 0.5*size, b + 0.5*size, c - 0.5*size);
-
-	glColor3f(0, 1, 1);
-	glVertex3f(a - 0.5*size, b + 0.5*size, c + 0.5*size);
-
-	glColor3f(0, 0, 1);
-	glVertex3f(a - 0.5*size, b - 0.5*size, c + 0.5*size);
-	glEnd();
 }
 
 
-void cylinder(float r, float h)
+
+void init(void)
 {
-	glBegin(GL_QUAD_STRIP);
-	for (int theta = 0; theta <= 360; theta += 5)
+	glClearColor(0.5, 0.5, 0.5, 1);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	currentMaterials = &whiteShineyMaterials;
+	
+	materials(currentMaterials);
+	currentLighting = &whiteLighting;
+	lighting(currentLighting);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+
+
+	float ratio = ww * 1.0 / (wh*1.0);
+
+
+	glClearColor(0, 0, 0, 1.0);	// background color; default black; (R, G, B, Opacity)
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if (ratio >= 1)
 	{
-		glVertex3f(r*cos(theta*DtoR), r*sin(theta*DtoR), 0);
-		glVertex3f(r*cos(theta*DtoR), r*sin(theta*DtoR), h);
+		left = -1.0 * REGION_DIM * ratio;
+		right = REGION_DIM * ratio;
+		bottom = -1.0 * REGION_DIM;
+		top = REGION_DIM;
+	}
+	else
+	{
+		left = -1.0 * REGION_DIM;
+		right = REGION_DIM;
+		bottom = -1.0 * REGION_DIM / ratio;
+		top = REGION_DIM / ratio;
 	}
 
-	glEnd();
+	glFrustum(left, right, bottom, top, near, far);	
+	glMatrixMode(GL_MODELVIEW);
 }
 
-
-void cone(float r, float h)
+void reshape(GLsizei w, GLsizei h)
 {
-	glBegin(GL_TRIANGLE_FAN);
-	for (int theta = 0; theta <= 360; theta += 5)
-	{
-		glVertex3f(0, 0, h);
-		glVertex3f(r*cos(theta*DtoR), r*sin(theta*DtoR), 0);
-		glVertex3f(r*cos((theta + 5)*DtoR), r*sin((theta + 5)*DtoR), 0);
+	float ratio = w * 1.0 / (h*1.0);
 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if (ratio >= 1)
+	{
+		left = -1.0 * REGION_DIM * ratio;
+		right = REGION_DIM * ratio;
+		bottom = -1.0 * REGION_DIM;
+		top = REGION_DIM;
 	}
-	glEnd();
-}
-
-void parabola2(float a, float b, float c, float leftEnd, float rightEnd)
-{
-	float x, y, dx = 0.01;
-
-
-	glBegin(GL_LINE_STRIP);
-	x = leftEnd;
-	while (x <= rightEnd)
+	else
 	{
-		y = a * x*x + b * x + c;
-
-		glVertex2f(x, y);
-
-		x += dx;
+		left = -1.0 * REGION_DIM;
+		right = REGION_DIM;
+		bottom = -1.0 * REGION_DIM / ratio;
+		top = REGION_DIM / ratio;
 	}
-	glEnd();
+	
+	glFrustum(left, right, bottom, top, near, far);	
+	glMatrixMode(GL_MODELVIEW);
+	glViewport(0, 0, w, h);		
+	ww = w;
+	wh = h;
 }
 
-void ellipse(float x0, float y0, float a, float b)
+void idle()
 {
-	float theta, dTheta = 1;
-	float x, y;
+	alpha += 0.01;
+	beta += 0.01;
+	gama += 0.01;
 
-	glBegin(GL_POLYGON);
-	theta = 0;
-	while (theta < 360)
+	if (alpha >= 360)
+		alpha -= 360;
+
+	if (beta >= 360)
+		beta -= 360;
+
+	if (gama >= 360)
+		gama -= 360;
+
+	glutPostRedisplay();
+}
+
+void mouse(int button, int state, int x, int y)
+{
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-		x = x0 + a * cos(theta*DtoR);
-		y = y0 + b * sin(theta*DtoR);
+		alpha += dAlpha * direction;
+	}
+	else if (button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN)
+	{
+		beta += dBeta * direction;
+	}
+	else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+	{
+		gama += dGama * direction;
+	}
+}
 
-		glVertex2f(x, y);
+void keys(unsigned char k, int x, int y)
+{
+	switch (k)
+	{
+	case '1':
+		glutIdleFunc(NULL);
+		break;
+	case '2':
+		glutIdleFunc(idle);
+		break;
+	case '3':
+		currentMaterials = &redPlasticMaterials;
+		break;
+	case '4':
+		currentMaterials = &whiteShineyMaterials;
+		break;
+	case '5':
+		currentMaterials = &brassMaterials;
+		break;
+	case '6':
+		currentLighting = &whiteLighting;
+		break;
+	case '7':
+		currentLighting = &coloredLighting;
+		break;
+	case 'q':
+		exit(0);
+		break;
+	}
 
+}
+
+
+void menu(int id)
+{
+	if (id == 1)
+	{
+		glutDisplayFunc(display2);
+	}
+	else if (id == 2)
+	{
+		glutDisplayFunc(display1);
+	}
+	else if (id == 3)
+	{
+		exit(0);
+	}
+}
+
+void specialKeys(int k, int x, int y)
+{
+	if (k == GLUT_KEY_LEFT)
+		theta -= dTheta;
+	else if (k == GLUT_KEY_RIGHT)
 		theta += dTheta;
+	else if (k == GLUT_KEY_UP)
+	{
+		if (phi > dPhi)
+			phi -= dPhi;
+		else if (phi == dPhi)
+			phi = 0.01;		
 	}
-	glEnd();
+	else if (k == GLUT_KEY_DOWN)
+	{
+		if (phi <= 180 - dPhi)
+			phi += dPhi;
+	}
 }
 
-void circle(float x0, float y0, float r)
+int main()
 {
-	float theta, dTheta = 1;
-	int count;
-	float x, y;
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); 
+	glutInitWindowSize(ww, wh);	
+	glutInitWindowPosition(100, 100); 
+	glutCreateWindow("Saee's Final Graphic Project");
+	init();
+	glutDisplayFunc(display1);
+	int display_menu;
+	display_menu = glutCreateMenu(menu);
+	glutAddMenuEntry("Start the animation", 1); //display2 will be called
+	glutAddMenuEntry("Stop the animation", 2);//display1 will be called as it is the default display
+	glutAddMenuEntry("Exit", 3);//Exits the program
+	glutCreateMenu(midbtn_menu);
+	glutAddSubMenu("What would you like the program to do?", display_menu);
+	glutAttachMenu(GLUT_MIDDLE_BUTTON);
 
-	count = (int)(360.0 / dTheta);
-	glBegin(GL_POLYGON);
-	for (int i = 0; i <= count; i++)
-	{
-		theta = i * dTheta*DtoR;
-		x = x0 + r * cos(theta);
-		y = y0 + r * sin(theta);
-		glVertex2f(x, y);
-	}
-	glEnd();
-}
-
-void parabola(float a, float h, float k, float leftEnd, float rightEnd)
-{
-	float x, y;
-	float dx = 0.01;
-
-	x = leftEnd;
-	glBegin(GL_LINE_STRIP);
-	while (x <= rightEnd)
-	{
-		y = a * (x - h)*(x - h) + k;
-
-		glVertex2f(x, y);
-
-		x += dx;
-	}
-	glEnd();
+	glutReshapeFunc(reshape);
+	glutMouseFunc(mouse);
+	glutKeyboardFunc(keys);
+	glutSpecialFunc(specialKeys);
+	glutIdleFunc(idle);
+	glutMainLoop();
+	return 1;
 }
