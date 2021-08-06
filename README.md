@@ -63,9 +63,8 @@ A graphical view of interactions between the moon and a rocket in space.
        - Exits the application.
   
 ## How to run 
-- Save the code in a file called 'Project.cpp'. 
-- Save the 'myObjects2020.cpp' file in a file called 'myObjects2020.cpp' file.
-- Click on Run and the output will be displayed.
+- Save the file called 'Project.cpp' and then click on Run and the output will be displayed.
+- You can download the 'Project.exe' to view the output.
 
 ## How to exit the program 
 - Click on 'q' on the keyboard.
